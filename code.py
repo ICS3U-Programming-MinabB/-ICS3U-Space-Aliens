@@ -7,6 +7,8 @@
 import ugame
 import stage
 
+import constant
+
 
 def game_scene():
     # this is the main scene for space alien
@@ -17,14 +19,14 @@ def game_scene():
 
     #set the background to image 0 in the image bank
     #   and the size
-    background = stage.Grid(image_bank_background, 10, 8)
+    background = stage.Grid(image_bank_background, constant.SCREEN_GRID_X, constant.SCREEN_GRID_Y)
 
     #a sprite that will update every frame
-    ship = stage.Sprite(image_bank_sprite, 5, 75, 66)
+    ship = stage.Sprite(image_bank_sprite, 5, 75, constant.SCREEN_Y - (2 * constant.SPRITE_SIZE))
 
     #create a stage for the background to show up on
     #   and set the frame rate to 60 fps
-    game = stage.Stage(ugame.display, 60)
+    game = stage.Stage(ugame.display, constant.FPS)
     #set the layers of all the sprites, items show up in order
     game.layers = [ship]+[background]
     #render all sprites
@@ -43,13 +45,19 @@ def game_scene():
         if keys & ugame.K_SELECT:
             pass
         if keys & ugame.K_RIGHT:
-            ship.move(ship.x + 1, ship.y)
+            if ship.x <= constant.SCREEN_X - constant.SPRITE_SIZE:
+                ship.move(ship.x + 1, ship.y)
+            else:
+                ship.move(constant.SCREEN_X - constant.SPRITE_SIZE, ship.y)
         if keys & ugame.K_LEFT:
-            ship.move(ship.x - 1, ship.y)
+            if ship.x >= 0:
+                ship.move(ship.x - 1, ship.y)
+            else:
+                ship.move(0, ship.y)
         if keys & ugame.K_UP:
-            ship.move(ship.x, ship.y - 1)
+            pass
         if keys & ugame.K_DOWN:
-            ship.move(ship.x, ship.y + 1)
+            pass
 
 
         #update game logic
