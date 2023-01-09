@@ -3,6 +3,7 @@
 # Created by: Minab Berhane
 # Created on: Dec. 14, 2022
 
+#storage of all important numbers
 SCREEN_X = 160
 SCREEN_Y = 128
 SCREEN_GRID_X = 10

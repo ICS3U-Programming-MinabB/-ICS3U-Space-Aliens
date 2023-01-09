@@ -44,6 +44,7 @@ def game_scene():
             pass
         if keys & ugame.K_SELECT:
             pass
+        #input to make the sprite move
         if keys & ugame.K_RIGHT:
             if ship.x <= constant.SCREEN_X - constant.SPRITE_SIZE:
                 ship.move(ship.x + 1, ship.y)
