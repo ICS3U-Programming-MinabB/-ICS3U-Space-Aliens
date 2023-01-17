@@ -6,9 +6,49 @@
  
 import ugame
 import stage
- 
+
 import constant
- 
+
+def menu_scene():
+    # main menu scene 
+
+    #image bank for the pybadge
+    image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
+    # text that is to be shown in menu scene 
+    #intro screen
+    text = []
+    text1 = stage.Text(width=29, height=12, font=None, palette=constant.RED_PALETTE, buffer=None)
+    text1.move(20, 10)
+    text1.text("Deadly Mouse Studios")
+    text.append(text1)
+    #Options menu
+    text2 = stage.Text(width=29, height=12, font=None, palette=constant.RED_PALETTE, buffer=None)
+    text2.move(30, 60)
+    text2.text("Space Bomber")
+    text.append(text2)
+    text3 = stage.Text(width=29, height=12, font=None, palette=constant.RED_PALETTE, buffer=None)
+    text3.move(40, 110)
+    text3.text("Press start")
+    text.append(text3)
+    #set the background to image 0 in the image bank and the size (10x8 tiles of size 16)
+
+    background = stage.Grid(image_bank_background, constant.SCREEN_GRID_X, constant.SCREEN_GRID_Y)
+
+    #set the frame rate to 60 fps
+    game = stage.Stage(ugame.display, constant.FPS)
+    #set the layers of all the sprites, items show up in order
+    game.layers = text + [background]
+    #render all sprites
+    game.render_block()
+
+    #repeat forever game loop
+    while True:
+        #get user input
+        keys = ugame.buttons.get_pressed()
+        if keys & ugame.K_START:
+            game_scene()
+        game.tick()
+
  
 def game_scene():
     # this is the main scene for space alien
@@ -36,12 +76,13 @@ def game_scene():
  
     #a sprite that will update every frame
     ship = stage.Sprite(image_bank_sprite, 5, 75, constant.SCREEN_Y - (2 * constant.SPRITE_SIZE))
+    alien = stage.Sprite(image_bank_sprite, 9, int(constant.SCREEN_X / 2 - constant.SPRITE_SIZE / 2 ), 16)
  
     #create a stage for the background to show up on
     #   and set the frame rate to 60 fps
     game = stage.Stage(ugame.display, constant.FPS)
     #set the layers of all the sprites, items show up in order
-    game.layers = [ship]+[background]
+    game.layers = [ship]+ [alien] + [background]
     #render all sprites
     game.render_block()
  
@@ -90,10 +131,8 @@ def game_scene():
         if a_button == constant.button_state["button_just_pressed"]:
             sound.play(pew_sound)
         #redraw sprite
-        game.render_sprites([ship])
+        game.render_sprites([ship] + [alien])
         game.tick()        
  
 if __name__ == "__main__":
-    game_scene()
- 
- 
+    menu_scene()
