@@ -2,11 +2,15 @@
 # Created by: Minab Berhane
 # Created on: Dec. 14, 2022
 # This program is for space alien in the PyBadge
+
+
 import ugame
 import stage
 import time
 import random
 import constants
+
+
 def splash_scene():
    # this is a splash scene
    # get sound ready
@@ -15,6 +19,7 @@ def splash_scene():
    sound.stop()
    sound.mute(False)
    sound.play(coin_sound)
+   
    #image bank for the pybadge
    image_bank_background = stage.Bank.from_bmp16("space_aliens_background.bmp")
   # text that is to be shown in menu scene
@@ -92,6 +97,7 @@ def menu_scene():
            game_scene()
        game.tick()
 def game_scene():
+   score = 0
 
 
    def show_alien():
@@ -115,6 +121,7 @@ def game_scene():
    select_button = constants.button_state["button_up"]
    #  sound bank for the pybadge game
    pew_sound = open("pew.wav", 'rb')
+   boom_sound = open("boom.wav", 'rb')
    sound = ugame.audio
    sound.stop()
    sound.mute(False)
@@ -148,8 +155,6 @@ def game_scene():
                                      constants.OFF_SCREEN_X,
                                      constants.OFF_SCREEN_Y)
        lasers.append(a_single_laser)
-
-
    #create a stage for the background to show on
    #and set the frame rate to 60 fps
    game = stage.Stage(ugame.display, constants.FPS)
@@ -196,6 +201,7 @@ def game_scene():
                if lasers[laser_number].x < 0:
                    lasers[laser_number].move(ship.x, ship.y)
                    sound.play(pew_sound)
+              
                    break
        for laser_number in range(len(lasers)):
            if lasers[laser_number].x > 0:
@@ -206,14 +212,30 @@ def game_scene():
                    lasers[laser_number].move(constants.OFF_SCREEN_X,
                                              constants.OFF_SCREEN_Y)
        for alien_number in range(len(alien)):
-          if alien[alien_number].x > 0:
-              alien[alien_number].move(alien[alien_number].x,
+           if alien[alien_number].x > 0:
+               alien[alien_number].move(alien[alien_number].x,
                                         alien[alien_number].y +
                                         constants.ALIEN_SPEED)
-              if alien[alien_number].y > constants.SCREEN_Y:
-                  alien[alien_number].move(constants.OFF_SCREEN_X,
+               if alien[alien_number].y > constants.SCREEN_Y:
+                   alien[alien_number].move(constants.OFF_SCREEN_X,
                                             constants.OFF_SCREEN_Y)
-                  show_alien()
+                   show_alien()
+       for laser_number in range(len(lasers)):
+           if lasers[laser_number].x > 0:
+               for alien_number in range(len(alien)):
+                  if alien[alien_number].x > 0:
+                      if stage.collide(lasers[laser_number].x + 6, lasers[laser_number].y + 2,
+                                       lasers[laser_number].x + 11, lasers[laser_number].y + 12,
+                                       alien[alien_number].x + 1, alien[alien_number].y,
+                                       alien[alien_number].x + 15, alien[alien_number].y + 15):
+                          # when a laser hits an enemy
+                          alien[alien_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+                          lasers[laser_number].move(constants.OFF_SCREEN_X, constants.OFF_SCREEN_Y)
+                          sound.stop()
+                          sound.play(boom_sound)
+                          show_alien()
+                          show_alien()
+                          score = score + 1
 
 
        #redraw sprite
@@ -221,5 +243,3 @@ def game_scene():
        game.tick()       
 if __name__ == "__main__":
      splash_scene()
-
-
